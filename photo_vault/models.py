@@ -1,7 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+class CustomUser(AbstractUser):
+    email=models.EmailField(unique=True)
+
+
 class Photo(models.Model):
-    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     title=models.CharField(max_length=25)
     description=models.TextField()
     photo=models.ImageField(upload_to="photos/")
