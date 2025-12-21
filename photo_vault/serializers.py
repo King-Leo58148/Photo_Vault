@@ -22,4 +22,7 @@ class PhotoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Photo
-        fields=['title','description','photo']
+        fields=['id','title','description','photo','private']
+       
+    def get_photo(self, obj): 
+        return obj.photo.url if obj.photo else None

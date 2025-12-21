@@ -12,16 +12,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 # settings.py
-import cloudinary
-
-# Cloudinary configuration
-cloudinary.config(
-    cloud_name="dt50fjfhy",  # your Cloudinary cloud name
-    api_key="738721482968615",  # your Cloudinary API key
-    api_secret="l-iP7z6kXdP9K_yIVSC58DLWIVg",  # your Cloudinary API secret
-    secure=True  # ensures URLs use HTTPS
-)
-
+import os 
+from dotenv import load_dotenv # Load .env file 
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -137,8 +130,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
+STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
 MEDIA_URL = '/media/'
+CLOUDINARY_STORAGE = { 'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'), 
+                      'API_KEY': os.getenv('CLOUDINARY_API_KEY'), 
+                      'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'), }
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -151,3 +147,4 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL='photo_vault.CustomUser'
+
