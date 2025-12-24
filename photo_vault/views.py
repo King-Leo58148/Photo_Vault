@@ -77,3 +77,9 @@ def delete_photo(request,photo_id):
    photo=get_object_or_404(Photo,pk=photo_id)
    photo.delete()
    return Response({"message":"photo deleted"},status=status.HTTP_202_ACCEPTED)
+
+@api_view(['GET'])
+def get_album(request,album_name):
+  album=get_list_or_404(Photo,user=request.user,album__album_name=album_name)
+  serializer=PhotoSerializer(album,many=True)
+  return Response(serializer.data)

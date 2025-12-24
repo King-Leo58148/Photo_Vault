@@ -12,4 +12,5 @@ urlpatterns = [
     path('public_photo/<int:photo_id>/',views.public_photo,name = 'public_photo'),
     path('all_public_photos/',views.all_public_photos, name = 'all_public_photos'),
     path('delete_photo/<int:photo_id>/',views.delete_photo,name='delete_photo'),
+    path('get_album/<str:album_name>/',views.get_album,name="get_album")
 ]

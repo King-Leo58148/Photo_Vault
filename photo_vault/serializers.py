@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Photo
+from .models import Photo,Album
 User=get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,13 +16,19 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-
+class AlbumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Album
+        fields=['album_name']
 
 class PhotoSerializer(serializers.ModelSerializer):
-
+    album = serializers.CharField()
     class Meta:
         model=Photo
-        fields=['id','title','description','photo','private']
-       
-    def get_photo(self, obj): 
-        return obj.photo.url if obj.photo else None
+        fields=['id','title','description','photo','private','album']
+    def create(self, validated_data): 
+            album_name = validated_data.pop('album')
+            album, _ = Album.objects.get_or_create(album_name=album_name) 
+            photo = Photo.objects.create(album=album, **validated_data) 
+            return photo
+    
