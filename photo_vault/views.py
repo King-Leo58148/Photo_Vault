@@ -52,34 +52,34 @@ def upload_photo(request):
  
 
 @cache_page(60 * 15)
-@vary_on_headers(["Authorization"])
 @api_view(['GET'])
 def list_photos(request):
       photos = Photo.objects.filter(user=request.user)
       serializer = PhotoSerializer(photos, many=True)
-      return Response(serializer.data)
+      response = Response(serializer.data) 
+      vary_on_headers(response, ["Authorization"])
+      return response
 
 
 @cache_page(60 * 15)
-@vary_on_headers(["Authorization"])
 @api_view(['GET'])
 def view_photo(request, photo_id):
   photo=get_object_or_404(Photo,user=request.user,pk=photo_id)
   serializer = PhotoSerializer(photo)
-  return Response(serializer.data)
+  response = Response(serializer.data) 
+  vary_on_headers(response, ["Authorization"])
+  return response
+
 
 
 @cache_page(60 * 15)
-@vary_on_headers(["Authorization"])
 @api_view(['GET'])
 def public_photo(request, photo_id):
   photo=get_object_or_404(Photo,pk=photo_id,private=False)
   serializer = PhotoSerializer(photo)
   return Response(serializer.data)
 
-
 @cache_page(60 * 15)
-@vary_on_headers(["Authorization"])  
 @api_view(['GET'])
 def all_public_photos(request):
   photos=get_list_or_404(Photo,private=False)
@@ -93,9 +93,10 @@ def delete_photo(request,photo_id):
    return Response({"message":"photo deleted"},status=status.HTTP_202_ACCEPTED)
 
 @cache_page(60 * 15)
-@vary_on_headers(["Authorization"]) 
 @api_view(['GET'])
 def get_album(request,album_name):
   album=get_list_or_404(Photo,user=request.user,album__album_name=album_name)
   serializer=PhotoSerializer(album,many=True)
-  return Response(serializer.data)
+  response = Response(serializer.data) 
+  vary_on_headers(response, ["Authorization"])
+  return response
