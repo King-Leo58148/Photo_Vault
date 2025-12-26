@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'cloudinary',
     'cloudinary_storage',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'django_redis',
 ]
 
 MIDDLEWARE = [
@@ -148,3 +149,13 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL='photo_vault.CustomUser'
 
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
