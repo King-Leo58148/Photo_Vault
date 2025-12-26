@@ -11,6 +11,9 @@ from . models import Photo
 from django.contrib.auth import get_user_model
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
+from .throttle import LoginRateThrottle
+from rest_framework.decorators import throttle_classes
+
 
 User=get_user_model()
 @api_view(['POST'])
@@ -26,6 +29,7 @@ def signup(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([LoginRateThrottle])
 def login(request):
   username=request.data.get('username')
   password=request.data.get('password')

@@ -159,3 +159,11 @@ CACHES = {
         }
     }
 }
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': { 
+        'login': '5/minute',
+    }
+}
