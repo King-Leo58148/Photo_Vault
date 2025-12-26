@@ -9,6 +9,8 @@ from rest_framework import status
 from . serializers import UserSerializer,PhotoSerializer
 from . models import Photo
 from django.contrib.auth import get_user_model
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_headers
 
 User=get_user_model()
 @api_view(['POST'])
@@ -48,24 +50,36 @@ def upload_photo(request):
     return Response(serializer.data,status = status.HTTP_201_CREATED)
   return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
  
+
+@cache_page(60 * 15)
+@vary_on_headers(["Authorization"])
 @api_view(['GET'])
 def list_photos(request):
       photos = Photo.objects.filter(user=request.user)
       serializer = PhotoSerializer(photos, many=True)
       return Response(serializer.data)
 
+
+@cache_page(60 * 15)
+@vary_on_headers(["Authorization"])
 @api_view(['GET'])
 def view_photo(request, photo_id):
   photo=get_object_or_404(Photo,user=request.user,pk=photo_id)
   serializer = PhotoSerializer(photo)
   return Response(serializer.data)
 
+
+@cache_page(60 * 15)
+@vary_on_headers(["Authorization"])
 @api_view(['GET'])
 def public_photo(request, photo_id):
   photo=get_object_or_404(Photo,pk=photo_id,private=False)
   serializer = PhotoSerializer(photo)
   return Response(serializer.data)
 
+
+@cache_page(60 * 15)
+@vary_on_headers(["Authorization"])  
 @api_view(['GET'])
 def all_public_photos(request):
   photos=get_list_or_404(Photo,private=False)
@@ -78,6 +92,8 @@ def delete_photo(request,photo_id):
    photo.delete()
    return Response({"message":"photo deleted"},status=status.HTTP_202_ACCEPTED)
 
+@cache_page(60 * 15)
+@vary_on_headers(["Authorization"]) 
 @api_view(['GET'])
 def get_album(request,album_name):
   album=get_list_or_404(Photo,user=request.user,album__album_name=album_name)
