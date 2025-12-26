@@ -11,7 +11,11 @@ from . models import Photo
 from django.contrib.auth import get_user_model
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
+<<<<<<< HEAD
 from .throttle import LoginRateThrottle,TokenAuthThrottle
+=======
+from .throttle import LoginRateThrottle
+>>>>>>> 1d5b253 (added throttle (rate limit) to prevent login abuse)
 from rest_framework.decorators import throttle_classes
 
 

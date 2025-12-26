@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 
 class LoginRateThrottle(AnonRateThrottle):
@@ -26,3 +27,9 @@ class TokenAuthThrottle(UserRateThrottle):
                 'ident': str(request.auth)
             }
         return None
+=======
+from rest_framework.throttling import AnonRateThrottle
+
+class LoginRateThrottle(AnonRateThrottle):
+    scope = 'login'
+>>>>>>> 1d5b253 (added throttle (rate limit) to prevent login abuse)
