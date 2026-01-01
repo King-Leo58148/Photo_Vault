@@ -144,7 +144,16 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PERMISSION_CLASSES':[
         'rest_framework.permissions.IsAuthenticated'
-    ]
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'photo_vault.throttle.TokenAuthThrottle',
+        'photo_vault.throttle.AnonRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'login': '5/minute',
+        'token_auth': '100/hour',
+        'anon': '10/minute',
+    }
 }
 
 AUTH_USER_MODEL='photo_vault.CustomUser'
@@ -157,13 +166,5 @@ CACHES = {
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
-    }
-}
-REST_FRAMEWORK = {
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-    ],
-    'DEFAULT_THROTTLE_RATES': { 
-        'login': '5/minute',
     }
 }

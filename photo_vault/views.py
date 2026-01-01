@@ -1,9 +1,9 @@
 from django.shortcuts import render,get_object_or_404,get_list_or_404
-from rest_framework.authentication import SessionAuthentication,authenticate
+from rest_framework.authentication import SessionAuthentication,authenticate,TokenAuthentication
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from . serializers import UserSerializer,PhotoSerializer
@@ -11,7 +11,7 @@ from . models import Photo
 from django.contrib.auth import get_user_model
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
-from .throttle import LoginRateThrottle
+from .throttle import LoginRateThrottle,TokenAuthThrottle
 from rest_framework.decorators import throttle_classes
 
 
@@ -42,11 +42,17 @@ def login(request):
   return Response({"token":token.key,"message":"Login Successful"})
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication,SessionAuthentication])
+@throttle_classes([TokenAuthThrottle])
 def logout(request):
   request.user.auth_token.delete()
   return Response({"message":"Logged out Successfully"})
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication,SessionAuthentication])
+@throttle_classes([TokenAuthThrottle])
 def upload_photo(request):
   serializer=PhotoSerializer(data=request.data)
   if serializer.is_valid():
@@ -57,6 +63,9 @@ def upload_photo(request):
 
 @cache_page(60 * 15)
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication,SessionAuthentication])
+@throttle_classes([TokenAuthThrottle])
 def list_photos(request):
       photos = Photo.objects.filter(user=request.user)
       serializer = PhotoSerializer(photos, many=True)
@@ -67,6 +76,9 @@ def list_photos(request):
 
 @cache_page(60 * 15)
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication,SessionAuthentication])
+@throttle_classes([TokenAuthThrottle])
 def view_photo(request, photo_id):
   photo=get_object_or_404(Photo,user=request.user,pk=photo_id)
   serializer = PhotoSerializer(photo)
@@ -91,6 +103,9 @@ def all_public_photos(request):
   return Response(serializer.data)
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication,SessionAuthentication])
+@throttle_classes([TokenAuthThrottle])
 def delete_photo(request,photo_id):
    photo=get_object_or_404(Photo,pk=photo_id)
    photo.delete()
@@ -98,6 +113,9 @@ def delete_photo(request,photo_id):
 
 @cache_page(60 * 15)
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication,SessionAuthentication])
+@throttle_classes([TokenAuthThrottle])
 def get_album(request,album_name):
   album=get_list_or_404(Photo,user=request.user,album__album_name=album_name)
   serializer=PhotoSerializer(album,many=True)
