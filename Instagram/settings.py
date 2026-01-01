@@ -168,14 +168,13 @@ CACHES = {
         }
     }
 }
-<<<<<<< HEAD
-=======
+
 REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': { 
         'login': '5/minute',
-    }
-}
->>>>>>> 1d5b253 (added throttle (rate limit) to prevent login abuse)
+        'token_auth': '100/hour',
+        'anon': '10/minute',
+}}
