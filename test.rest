@@ -1,0 +1,4 @@
+###login
+GET http://127.0.0.1:8000/view_photo/3/
+Content-Type: application/json
+Authorization: Token 987d685a46c8a533768baed924b7cfaf95513051
