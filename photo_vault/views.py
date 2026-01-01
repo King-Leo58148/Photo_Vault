@@ -122,3 +122,14 @@ def get_album(request,album_name):
   response = Response(serializer.data) 
   vary_on_headers(response, ["Authorization"])
   return response
+
+@cache_page(60*15)
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication,SessionAuthentication])
+@throttle_classes([TokenAuthThrottle])
+def delete_album(request,album_name):
+  album_photos=get_list_or_404(Photo,user=request.user,album__album_name=album_name)
+  for photo in album_photos:
+    photo.delete()
+  return Response({"message":"Album and all associated photos deleted"},status=status.HTTP_202_ACCEPTED)
