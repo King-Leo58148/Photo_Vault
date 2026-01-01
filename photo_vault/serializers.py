@@ -22,13 +22,13 @@ class AlbumSerializer(serializers.ModelSerializer):
         fields=['album_name']
 
 class PhotoSerializer(serializers.ModelSerializer):
-    album = serializers.CharField()
+    album = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     class Meta:
         model=Photo
         fields=['id','title','description','photo','private','album']
-    def create(self, validated_data): 
-            album_name = validated_data.pop('album')
+    def create(self, validated_data):
+         album_name = validated_data.pop('album', None) 
+         album = None 
+         if album_name: 
             album, _ = Album.objects.get_or_create(album_name=album_name) 
-            photo = Photo.objects.create(album=album, **validated_data) 
-            return photo
-    
+         return Photo.objects.create(album=album, **validated_data)
