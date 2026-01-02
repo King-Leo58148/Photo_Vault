@@ -11,7 +11,6 @@ from . models import Photo
 from django.contrib.auth import get_user_model
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
-from .throttle import LoginRateThrottle,TokenAuthThrottle
 from rest_framework.decorators import throttle_classes
 
 
@@ -29,7 +28,6 @@ def signup(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@throttle_classes([LoginRateThrottle])
 def login(request):
   username=request.data.get('username')
   password=request.data.get('password')
@@ -44,7 +42,6 @@ def login(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication,SessionAuthentication])
-@throttle_classes([TokenAuthThrottle])
 def logout(request):
   request.user.auth_token.delete()
   return Response({"message":"Logged out Successfully"})
@@ -52,7 +49,6 @@ def logout(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication,SessionAuthentication])
-@throttle_classes([TokenAuthThrottle])
 def upload_photo(request):
   serializer=PhotoSerializer(data=request.data)
   if serializer.is_valid():
@@ -65,7 +61,6 @@ def upload_photo(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication,SessionAuthentication])
-@throttle_classes([TokenAuthThrottle])
 def list_photos(request):
       photos = Photo.objects.filter(user=request.user)
       serializer = PhotoSerializer(photos, many=True)
@@ -78,7 +73,6 @@ def list_photos(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication,SessionAuthentication])
-@throttle_classes([TokenAuthThrottle])
 def view_photo(request, photo_id):
   photo=get_object_or_404(Photo,user=request.user,pk=photo_id)
   serializer = PhotoSerializer(photo)
@@ -105,7 +99,6 @@ def all_public_photos(request):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication,SessionAuthentication])
-@throttle_classes([TokenAuthThrottle])
 def delete_photo(request,photo_id):
    photo=get_object_or_404(Photo,pk=photo_id)
    photo.delete()
@@ -115,7 +108,6 @@ def delete_photo(request,photo_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication,SessionAuthentication])
-@throttle_classes([TokenAuthThrottle])
 def get_album(request,album_name):
   album=get_list_or_404(Photo,user=request.user,album__album_name=album_name)
   serializer=PhotoSerializer(album,many=True)
@@ -127,7 +119,6 @@ def get_album(request,album_name):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication,SessionAuthentication])
-@throttle_classes([TokenAuthThrottle])
 def delete_album(request,album_name):
   album_photos=get_list_or_404(Photo,user=request.user,album__album_name=album_name)
   for photo in album_photos:

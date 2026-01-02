@@ -171,10 +171,9 @@ CACHES = {
 
 REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
     ],
-    'DEFAULT_THROTTLE_RATES': { 
-        'login': '5/minute',
-        'token_auth': '100/hour',
-        'anon': '10/minute',
-}}
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '3/minute'
+    }
+}
