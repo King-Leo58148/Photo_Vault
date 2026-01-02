@@ -12,11 +12,13 @@ from django.contrib.auth import get_user_model
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
 from rest_framework.decorators import throttle_classes
+from .throttle import signupRateThrottle,loginRateThrottle
 
 
 User=get_user_model()
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([signupRateThrottle])
 def signup(request):
   serializer=UserSerializer(data=request.data)
   if serializer.is_valid():
@@ -28,6 +30,7 @@ def signup(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([loginRateThrottle])
 def login(request):
   username=request.data.get('username')
   password=request.data.get('password')
@@ -41,7 +44,6 @@ def login(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-@authentication_classes([TokenAuthentication,SessionAuthentication])
 def logout(request):
   request.user.auth_token.delete()
   return Response({"message":"Logged out Successfully"})
