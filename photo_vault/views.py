@@ -1,6 +1,6 @@
 from django.shortcuts import render,get_object_or_404,get_list_or_404
 from rest_framework.authentication import authenticate,TokenAuthentication
-from rest_framework.permissions import IsAuthenticated,AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view,permission_classes,authentication_classes
@@ -43,14 +43,12 @@ def login(request):
   return Response({"token":token.key,"message":"Login Successful"})
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def logout(request):
   request.user.auth_token.delete()
   return Response({"message":"Logged out Successfully"})
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def upload_photo(request):
   serializer=PhotoSerializer(data=request.data)
@@ -62,7 +60,6 @@ def upload_photo(request):
 
 @cache_page(60 * 15)
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def list_photos(request):
       photos = Photo.objects.filter(user=request.user)
@@ -74,7 +71,7 @@ def list_photos(request):
 
 @cache_page(60 * 15)
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def view_photo(request, photo_id):
   photo=get_object_or_404(Photo,user=request.user,pk=photo_id)
   serializer = PhotoSerializer(photo)
@@ -100,7 +97,6 @@ def all_public_photos(request):
   return Response(serializer.data)
 
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def delete_photo(request,photo_id):
    photo=get_object_or_404(Photo,pk=photo_id)
@@ -109,7 +105,6 @@ def delete_photo(request,photo_id):
 
 @cache_page(60 * 15)
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def get_album(request,album_name):
   album=get_list_or_404(Photo,user=request.user,album__album_name=album_name)
@@ -119,8 +114,7 @@ def get_album(request,album_name):
   return response
 
 @cache_page(60*15)
-@api_view(['DELETE'])
-@permission_classes([IsAuthenticated])  
+@api_view(['DELETE'])  
 @authentication_classes([TokenAuthentication])
 def delete_album(request,album_name):
   album_photos=get_list_or_404(Photo,user=request.user,album__album_name=album_name)
