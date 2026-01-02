@@ -121,3 +121,4 @@ def delete_album(request,album_name):
   for photo in album_photos:
     photo.delete()
   return Response({"message":"Album and all associated photos deleted"},status=status.HTTP_202_ACCEPTED)
+

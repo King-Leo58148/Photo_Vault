@@ -146,13 +146,12 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated'
     ],
     'DEFAULT_THROTTLE_CLASSES': [
-        'photo_vault.throttle.TokenAuthThrottle',
-        'photo_vault.throttle.AnonRateThrottle',
+        'photo_vault.throttle.loginRateThrottle',
+        'photo_vault.throttle.signupRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
         'login': '5/minute',
-        'token_auth': '100/hour',
-        'anon': '10/minute',
+        'signup': '3/minute',
     }
 }
 
