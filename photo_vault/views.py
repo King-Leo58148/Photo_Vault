@@ -50,7 +50,6 @@ def logout(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-@authentication_classes([TokenAuthentication,SessionAuthentication])
 def upload_photo(request):
   serializer=PhotoSerializer(data=request.data)
   if serializer.is_valid():
@@ -62,7 +61,6 @@ def upload_photo(request):
 @cache_page(60 * 15)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-@authentication_classes([TokenAuthentication,SessionAuthentication])
 def list_photos(request):
       photos = Photo.objects.filter(user=request.user)
       serializer = PhotoSerializer(photos, many=True)
@@ -74,7 +72,6 @@ def list_photos(request):
 @cache_page(60 * 15)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-@authentication_classes([TokenAuthentication,SessionAuthentication])
 def view_photo(request, photo_id):
   photo=get_object_or_404(Photo,user=request.user,pk=photo_id)
   serializer = PhotoSerializer(photo)
@@ -100,7 +97,6 @@ def all_public_photos(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-@authentication_classes([TokenAuthentication,SessionAuthentication])
 def delete_photo(request,photo_id):
    photo=get_object_or_404(Photo,pk=photo_id)
    photo.delete()
@@ -109,7 +105,6 @@ def delete_photo(request,photo_id):
 @cache_page(60 * 15)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-@authentication_classes([TokenAuthentication,SessionAuthentication])
 def get_album(request,album_name):
   album=get_list_or_404(Photo,user=request.user,album__album_name=album_name)
   serializer=PhotoSerializer(album,many=True)
@@ -120,7 +115,6 @@ def get_album(request,album_name):
 @cache_page(60*15)
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-@authentication_classes([TokenAuthentication,SessionAuthentication])
 def delete_album(request,album_name):
   album_photos=get_list_or_404(Photo,user=request.user,album__album_name=album_name)
   for photo in album_photos:
