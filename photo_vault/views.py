@@ -121,3 +121,10 @@ def delete_album(request,album_name):
     photo.delete()
   return Response({"message":"Album and all associated photos deleted"},status=status.HTTP_202_ACCEPTED)
 
+@api_view(['PATCH'])
+def update_album_name(request,name):
+  pass
+
+@api_view(['PATCH'])
+def update_photo_name(request,name):
+  pass
