@@ -5,14 +5,14 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from rest_framework.authtoken.models import Token
 from rest_framework import status
-from . serializers import UserSerializer,PhotoSerializer
+from . serializers import UserSerializer,PhotoSerializer,AlbumSerializer
 from . models import Photo
 from django.contrib.auth import get_user_model
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
 from rest_framework.decorators import throttle_classes
 from .throttle import signupRateThrottle,loginRateThrottle
-
+from .models import Album
 
 User=get_user_model()
 @api_view(['POST'])
@@ -122,8 +122,19 @@ def delete_album(request,album_name):
   return Response({"message":"Album and all associated photos deleted"},status=status.HTTP_202_ACCEPTED)
 
 @api_view(['PATCH'])
-def update_album_name(request,name):
-  pass
+@authentication_classes([TokenAuthentication])
+def rename_album(request, album_name):
+    photo = Photo.objects.filter(album__album_name=album_name, user=request.user).first()
+    if not photo:
+        return Response({"error": "Album not found"}, status=status.HTTP_404_NOT_FOUND)
+    album = photo.album  
+
+    serializer = AlbumSerializer(album, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['PATCH'])
 def update_photo_name(request,name):

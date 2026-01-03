@@ -14,4 +14,5 @@ urlpatterns = [
     path('delete_photo/<int:photo_id>/',views.delete_photo,name='delete_photo'),
     path('get_album/<str:album_name>/',views.get_album,name="get_album"),
     path('delete_album/<str:album_name>/',views.delete_album,name="delete_album"),
+    path('rename_album/<str:album_name>/',views.rename_album,name="rename_album"),
 ]
