@@ -137,5 +137,11 @@ def rename_album(request, album_name):
 
 
 @api_view(['PATCH'])
-def update_photo_name(request,name):
-  pass
+@authentication_classes([TokenAuthentication])
+def rename_photo(request, photo_name):
+    photo=get_object_or_404(Photo,title=photo_name,user=request.user)
+    serializer=PhotoSerializer(photo,data=request.data,partial=True)
+    if serializer.is_valid():
+       serializer.save()
+       return Response(serializer.data,status=status.HTTP_200_OK)
+    return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

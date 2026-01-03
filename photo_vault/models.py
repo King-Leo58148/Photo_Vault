@@ -13,7 +13,7 @@ class Album(models.Model):
 
 class Photo(models.Model):
     user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
-    title=models.CharField(max_length=25)
+    title=models.CharField(max_length=25,unique=True)
     description=models.TextField()
     photo=models.ImageField(storage=MediaCloudinaryStorage(),upload_to="photos/")
     private=models.BooleanField(default=True)
