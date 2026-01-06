@@ -95,6 +95,21 @@ def all_public_photos(request):
   serializer=PhotoSerializer(photos,many=True)
   return Response(serializer.data)
 
+@cache_page(60 * 15)
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+def personal_public_photos(request):
+  photos=get_list_or_404(Photo,user=request.user  ,private=False)
+  serializer=PhotoSerializer(photos,many=True)
+  return Response(serializer.data)
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+def all_private_photos(request):
+  photos=get_list_or_404(Photo,user=request.user,private=True)
+  serializer=PhotoSerializer(photos,many=True)
+  return Response(serializer.data)
+
 @api_view(['DELETE'])
 @authentication_classes([TokenAuthentication])
 def delete_photo(request,photo_id):
