@@ -1,4 +1,4 @@
-# Photo Vault ??
+# Photo Vault
 
 A Django REST API for managing and sharing photos securely. Users can upload, organize photos into albums, and control privacy settings with token-based authentication.
 
@@ -16,20 +16,20 @@ A Django REST API for managing and sharing photos securely. Users can upload, or
 
 ## Features
 
-? **User Authentication**
+**User Authentication**
 - User registration and login with token-based authentication
 - Session and token-based authentication support
-- Rate limiting on login endpoint (5 requests/minute)
+- Rate limiting on login endpoint (3 requests/minute)
 - User logout functionality
 
-?? **Photo Management**
+**Photo Management**
 - Upload photos with title, description, and privacy settings
 - Organize photos into albums
 - View personal and public photos
 - Delete photos
 - Cache photos for improved performance
 
-?? **Privacy & Security**
+**Privacy & Security**
 - Private/Public photo visibility control
 - User-specific photo access
 - Token authentication for API requests
@@ -41,13 +41,13 @@ A Django REST API for managing and sharing photos securely. Users can upload, or
 
 | Component | Technology |
 |-----------|-----------|
-| **Framework** | Django 6.0 |
-| **API** | Django REST Framework |
-| **Database** | MySQL |
-| **Authentication** | Token Authentication |
-| **Cache** | Redis |
-| **Cloud Storage** | Cloudinary |
-| **Environment** | Python 3.x |
+| Framework | Django 6.0 |
+| API | Django REST Framework |
+| Database | MySQL |
+| Authentication | Token Authentication |
+| Cache | Redis |
+| Cloud Storage | Cloudinary |
+| Environment | Python 3.x |
 
 ---
 
@@ -55,25 +55,26 @@ A Django REST API for managing and sharing photos securely. Users can upload, or
 
 ```
 Instagram/
-+-- manage.py                 # Django CLI
-+-- Pipfile                   # Dependency management
-+-- README.md                 # This file
-�
-+-- Instagram/               # Project settings
-�   +-- settings.py          # Django configuration
-�   +-- urls.py              # Root URL configuration
-�   +-- wsgi.py              # WSGI application
-�   +-- asgi.py              # ASGI application
-�
-+-- photo_vault/             # Main application
-    +-- models.py            # Database models
-    +-- views.py             # API endpoints
-    +-- serializers.py       # DRF serializers
-    +-- urls.py              # App URL routes
-    +-- admin.py             # Django admin
-    +-- throttle.py          # Rate limiting
-    +-- migrations/          # Database migrations
-    +-- tests.py             # Test suite
+├── manage.py
+├── Pipfile
+├── README.md
+├── .env                     # Not committed — create locally
+│
+├── Instagram/
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+│   └── asgi.py
+│
+└── photo_vault/
+    ├── models.py
+    ├── views.py
+    ├── serializers.py
+    ├── urls.py
+    ├── admin.py
+    ├── throttle.py
+    ├── migrations/
+    └── tests.py
 ```
 
 ---
@@ -87,55 +88,68 @@ Instagram/
 
 ### Installation Steps
 
-1. **Clone the repository**
-   ```bash
-   cd Instagram
-   ```
+1. Clone the repository
+```bash
+git clone https://github.com/King-Leo58148/Photo_Vault.git
+cd Photo_Vault
+```
 
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   # OR if using Pipfile
-   pipenv install
-   ```
+2. Create and activate a virtual environment
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
 
-3. **Create .env file** in project root
-   ```env
-   CLOUDINARY_CLOUD_NAME=your_cloud_name
-   CLOUDINARY_API_KEY=your_api_key
-   CLOUDINARY_API_SECRET=your_api_secret
-   ```
+3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
 
-4. **Configure MySQL Database**
-   - Update `Instagram/settings.py` with your database credentials
-   - Default: `photo_vault` database, `root` user
+4. Create a `.env` file in the project root with the following values
+```
+SECRET_KEY=your-secret-key
+DB_NAME=photo_vault
+DB_USER=your-db-user
+DB_PASSWORD=your-db-password
+DB_HOST=localhost
+DB_PORT=3306
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+```
 
-5. **Run migrations**
-   ```bash
-   python manage.py migrate
-   ```
+5. Create the MySQL database
+```sql
+CREATE DATABASE photo_vault;
+```
 
-6. **Start Redis Server**
-   ```bash
-   redis-server
-   ```
+6. Run migrations
+```bash
+python manage.py migrate
+```
 
-7. **Run development server**
-   ```bash
-   python manage.py runserver
-   ```
-   Server runs on `http://localhost:8000/`
+7. Start Redis
+```bash
+redis-server
+```
+
+8. Run the development server
+```bash
+python manage.py runserver
+```
+
+Server runs on `http://localhost:8000/`
 
 ---
 
 ## API Endpoints
 
-### Authentication Endpoints
+### Authentication
 
-#### **POST** `/signup/`
+#### POST `/signup/`
 Register a new user account.
 
-**Request Body:**
+Request body:
 ```json
 {
   "username": "john_doe",
@@ -146,7 +160,7 @@ Register a new user account.
 }
 ```
 
-**Response (201 Created):**
+Response (201 Created):
 ```json
 {
   "token": "abc123xyz789",
@@ -160,10 +174,10 @@ Register a new user account.
 
 ---
 
-#### **POST** `/login/`
-Authenticate user and get token. *Rate limited: 5 requests/minute*
+#### POST `/login/`
+Authenticate and get a token. Rate limited to 3 requests per minute.
 
-**Request Body:**
+Request body:
 ```json
 {
   "username": "john_doe",
@@ -171,7 +185,7 @@ Authenticate user and get token. *Rate limited: 5 requests/minute*
 }
 ```
 
-**Response (200 OK):**
+Response (200 OK):
 ```json
 {
   "token": "abc123xyz789",
@@ -181,15 +195,15 @@ Authenticate user and get token. *Rate limited: 5 requests/minute*
 
 ---
 
-#### **POST** `/logout/`
-Logout user and revoke token.
+#### POST `/logout/`
+Logout and revoke token.
 
-**Headers:**
+Headers:
 ```
 Authorization: Token abc123xyz789
 ```
 
-**Response (200 OK):**
+Response (200 OK):
 ```json
 {
   "message": "Logged out Successfully"
@@ -198,26 +212,26 @@ Authorization: Token abc123xyz789
 
 ---
 
-### Photo Management Endpoints
+### Photo Management
 
-#### **POST** `/upload_photo/`
+#### POST `/upload_photo/`
 Upload a new photo.
 
-**Headers:**
+Headers:
 ```
 Authorization: Token abc123xyz789
 ```
 
-**Request Body (multipart/form-data):**
+Request body (multipart/form-data):
 ```
 title: "My vacation"
 description: "Beach photos from summer"
 photo: <image_file>
 private: true
-album: null  (optional, album ID)
+album: null
 ```
 
-**Response (201 Created):**
+Response (201 Created):
 ```json
 {
   "id": 5,
@@ -232,15 +246,15 @@ album: null  (optional, album ID)
 
 ---
 
-#### **GET** `/list_photos/`
-Get all photos for authenticated user. *Cached for 15 minutes*
+#### GET `/list_photos/`
+Get all photos for the authenticated user. Cached for 15 minutes.
 
-**Headers:**
+Headers:
 ```
 Authorization: Token abc123xyz789
 ```
 
-**Response (200 OK):**
+Response (200 OK):
 ```json
 [
   {
@@ -256,15 +270,15 @@ Authorization: Token abc123xyz789
 
 ---
 
-#### **GET** `/view_photo/<photo_id>/`
-Get a specific photo. *Cached for 15 minutes*
+#### GET `/view_photo/<photo_id>/`
+Get a specific photo. Cached for 15 minutes.
 
-**Headers:**
+Headers:
 ```
 Authorization: Token abc123xyz789
 ```
 
-**Response (200 OK):**
+Response (200 OK):
 ```json
 {
   "id": 1,
@@ -278,10 +292,10 @@ Authorization: Token abc123xyz789
 
 ---
 
-#### **GET** `/public_photo/<photo_id>/`
-View a public photo (no authentication required). *Cached for 15 minutes*
+#### GET `/public_photo/<photo_id>/`
+View a public photo. No authentication required. Cached for 15 minutes.
 
-**Response (200 OK):**
+Response (200 OK):
 ```json
 {
   "id": 3,
@@ -293,10 +307,10 @@ View a public photo (no authentication required). *Cached for 15 minutes*
 
 ---
 
-#### **GET** `/all_public_photos/`
-Get all public photos. *Cached for 15 minutes*
+#### GET `/all_public_photos/`
+Get all public photos. No authentication required. Cached for 15 minutes.
 
-**Response (200 OK):**
+Response (200 OK):
 ```json
 [
   {
@@ -309,15 +323,15 @@ Get all public photos. *Cached for 15 minutes*
 
 ---
 
-#### **DELETE** `/delete_photo/<photo_id>/`
+#### DELETE `/delete_photo/<photo_id>/`
 Delete a photo.
 
-**Headers:**
+Headers:
 ```
 Authorization: Token abc123xyz789
 ```
 
-**Response (202 Accepted):**
+Response (202 Accepted):
 ```json
 {
   "message": "photo deleted"
@@ -326,15 +340,15 @@ Authorization: Token abc123xyz789
 
 ---
 
-#### **GET** `/get_album/<album_name>/`
-Get all photos in an album. *Cached for 15 minutes*
+#### GET `/get_album/<album_name>/`
+Get all photos in an album. Cached for 15 minutes.
 
-**Headers:**
+Headers:
 ```
 Authorization: Token abc123xyz789
 ```
 
-**Response (200 OK):**
+Response (200 OK):
 ```json
 [
   {
@@ -350,53 +364,50 @@ Authorization: Token abc123xyz789
 ## Database Models
 
 ### CustomUser
-Extends Django's AbstractUser with unique email field.
-```python
+Extends Django's AbstractUser with a unique email field.
+
 - username: CharField
 - password: CharField
 - email: EmailField (unique)
 - first_name: CharField
 - last_name: CharField
-```
 
 ### Album
 Groups photos together.
-```python
+
 - album_name: CharField (max 25 chars)
-```
 
 ### Photo
 Main model for storing photo metadata.
-```python
+
 - user: ForeignKey(CustomUser, CASCADE)
 - title: CharField (max 25 chars)
 - description: TextField
 - photo: ImageField (stored in Cloudinary)
 - private: BooleanField (default: True)
 - album: ForeignKey(Album, DO_NOTHING, nullable)
-```
 
 ---
 
 ## Configuration
 
-### Important Settings (Instagram/settings.py)
+All sensitive values are stored in a `.env` file and loaded via `python-dotenv`. Never commit your `.env` file — it is included in `.gitignore`.
 
-**Database Configuration:**
+### Database
 ```python
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'photo_vault',
-        'USER': 'root',
-        'PASSWORD': 'louis@2007',
-        'HOST': 'localhost',
-        'PORT': '3306'
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 ```
 
-**Authentication:**
+### Authentication
 ```python
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -409,7 +420,7 @@ REST_FRAMEWORK = {
 }
 ```
 
-**Caching (Redis):**
+### Caching (Redis)
 ```python
 CACHES = {
     "default": {
@@ -419,20 +430,21 @@ CACHES = {
 }
 ```
 
-**Cloudinary Storage:**
+### Cloudinary Storage
 ```python
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
 ```
 
-**Rate Limiting:**
-- Login endpoint: 5 requests per minute per IP
+### Rate Limiting
+- Login: 3 requests per minute
+- Signup: 2 requests per minute
 
 ---
 
 ## Usage Examples
 
-### Example 1: Register and Login
+### Register and Login
 ```bash
 # Signup
 curl -X POST http://localhost:8000/signup/ \
@@ -445,7 +457,7 @@ curl -X POST http://localhost:8000/login/ \
   -d '{"username":"john","password":"pass123"}'
 ```
 
-### Example 2: Upload and View Photos
+### Upload and View Photos
 ```bash
 # Upload photo
 curl -X POST http://localhost:8000/upload_photo/ \
@@ -455,17 +467,17 @@ curl -X POST http://localhost:8000/upload_photo/ \
   -F "description=Beautiful sunset" \
   -F "private=true"
 
-# List user's photos
+# List photos
 curl -X GET http://localhost:8000/list_photos/ \
   -H "Authorization: Token YOUR_TOKEN"
 ```
 
-### Example 3: View Public Photos
+### View Public Photos
 ```bash
-# Get all public photos (no token required)
+# All public photos
 curl http://localhost:8000/all_public_photos/
 
-# Get specific public photo
+# Specific public photo
 curl http://localhost:8000/public_photo/3/
 ```
 
@@ -473,22 +485,19 @@ curl http://localhost:8000/public_photo/3/
 
 ## Error Handling
 
-All endpoints return standard HTTP status codes:
-- **200** - OK
-- **201** - Created
-- **202** - Accepted
-- **400** - Bad Request
-- **401** - Unauthorized
-- **404** - Not Found
-- **429** - Too Many Requests (Rate Limit)
-- **500** - Server Error
+| Status Code | Meaning |
+|---|---|
+| 200 | OK |
+| 201 | Created |
+| 202 | Accepted |
+| 400 | Bad Request |
+| 401 | Unauthorized |
+| 404 | Not Found |
+| 429 | Too Many Requests |
+| 500 | Server Error |
 
 ---
 
 ## License
 
 This project is open source and available under the MIT License.
-
----
-
-**Last Updated:** December 26, 2025
